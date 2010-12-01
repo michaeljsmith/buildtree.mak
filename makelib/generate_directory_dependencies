@@ -14,12 +14,12 @@ dependency_directory=$(dirname $output_path)
 entries=$(ls -p $directory)
 
 echo "" > $output_path
+
 echo "directory=$directory" >> $output_path
 echo "dependency_directory=$dependency_directory" >> $output_path
 
-for entry in $entries; do
-	echo "include $dependency_directory/$entry.$dependency_extension" >> $output_path
-done
-
 echo "include makelib/dependency_generation.mak" >> $output_path
 
+for entry in $entries; do
+	echo "-include $dependency_directory/$entry.$dependency_extension" >> $output_path
+done
