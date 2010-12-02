@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Process command line arguments.
+include_dirs=
+while getopts :I: flag; do
+	case "$flag" in
+		I)	include_dir="${OPTARG%/}" # Remove trailing slash.
+			include_dirs=$(echo -e "$include_dirs\n$include_dir")
+			;;
+	esac
+done
+shift `expr $OPTIND - 1`
+
+marker_extension="marker"
+
+# Remaining positional arguments are the paths.
+output_path=$1
+source_path=$2
+source_file=$(basename $source_path)
+source_directory=$(dirname $source_path)
+output_directory=$(dirname $output_path)
+marker_file=$output_directory/$source_file.$marker_extension
+
+# Prepend the source file's directory to the include paths.
+include_dirs="$(echo -e "$source_directory\n$include_dirs")"
+
+# Extract include statements from the source file.
+include_files=$(sed -n -e 's/^\s*#include\s\+"\(.*\)".*$/\1/p' $source_path)
+
+# Search for each file in the include paths and create a list of the included 
+# files.
+OLDIFS=$IFS
+IFS=$(echo -en "\n\b")
+include_paths=""
+for include_file in $include_files; do
+	include_path=""
+	for include_dir in $include_dirs; do
+		path="$include_dir/$include_file"
+		if [ -f $path ]; then
+			include_path=$path
+		fi
+	done
+
+	if [ -z $include_path ]; then
+		echo "Cannot find include file \"$include_file\", referenced in \"$source_path\"." >&2
+	else
+		include_paths=$(echo -e "$include_paths\n$include_path")
+	fi
+done
+IFS=$OLDIFS
+
+# Output the dependency makefile fragment.
+
+# Output the dependencies of the marker file.
+echo -n "include_markers=" >> $output_path
+OLDIFS=$IFS
+IFS=$(echo -en "\n\b")
+for include_path in $include_paths; do
+	echo -ne " \\\\\n    \$(module_dep_path)/$include_path.marker" >> $output_path
+done
+echo "" >> $output_path
+echo "" >> $output_path
+IFS=$OLDIFS
+
+echo "$marker_file: $source_path \$include_markers" >> $output_path
+
+echo -e "\ttouch $marker_file" >> $output_path
+echo "" >> $output_path

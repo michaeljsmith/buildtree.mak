@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Output the part of the file that also applies to header files.
+bash makelib/generate_h_dependencies $*
+
 # Process command line arguments.
 include_dirs=
 while getopts :I: flag; do
@@ -21,63 +24,7 @@ source_directory=$(dirname $source_path)
 output_directory=$(dirname $output_path)
 marker_file=$output_directory/$source_file.$marker_extension
 
-# Prepend the source file's directory to the include paths.
-include_dirs="$(echo -e "$source_directory\n$include_dirs")"
-
-# Extract include statements from the source file.
-include_files=$(sed -n -e 's/^\s*#include\s\+"\(.*\)".*$/\1/p' $source_path)
-
-# Search for each file in the include paths and create a list of the included 
-# files.
-OLDIFS=$IFS
-IFS=$(echo -en "\n\b")
-include_paths=""
-for include_file in $include_files; do
-	include_path=""
-	for include_dir in $include_dirs; do
-		path="$include_dir/$include_file"
-		if [ -f $path ]; then
-			include_path=$path
-		fi
-	done
-
-	if [ -z $include_path ]; then
-		echo "Cannot find include file \"$include_file\", referenced in \"$source_path\"." >&2
-	else
-		include_paths=$(echo -e "$include_paths\n$include_path")
-	fi
-done
-IFS=$OLDIFS
-
-# Output the dependency makefile fragment.
-
-# Output the dependencies of the source file.
-echo "" > $output_path
-echo "$source_file.o: \\" >> $output_path
-echo "    $source_file \\" >> $output_path
-
-OLDIFS=$IFS
-IFS=$(echo -en "\n\b")
-for include_path in $include_paths; do
-	echo "    $include_path.dep \\" >> $output_path
-done
-IFS=$OLDIFS
-
 # Output the rule for making the object file. Not relevant for header files.
-echo "" > $output_path
-echo "$output_directory/$source_file.o: \\" >> $output_path
-echo "    $marker_file" >> $output_path
+echo "$output_directory/$source_file.o: $marker_file" >> $output_path
 echo "" >> $output_path
-
-# Output the dependencies of the marker file.
-echo "$marker_file: \\" >> $output_path
-echo "    $source_path \\" >> $output_path
-
-OLDIFS=$IFS
-IFS=$(echo -en "\n\b")
-for include_path in $include_paths; do
-	echo "    \$(module_dep_path)/$include_path.marker \\" >> $output_path
-done
-echo "" >> $output_path
-IFS=$OLDIFS
 
