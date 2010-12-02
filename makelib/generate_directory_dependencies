@@ -2,18 +2,30 @@
 
 if [ $# -ne 2 ]; then
 	echo "Usage: $0 <outputfile> <directory>"
+	exit 1
+fi
+output_path=$1
+directory=$2
+
+directory_marker_file_extension=dirmarker
+directory_marker_file=.directory.$directory_marker_file_extension
+
+directory_marker_path=$directory/$directory_marker_file
+
+echo "" > $output_path
+
+# To prevent infinite recursion, skip directories that we have created - we 
+# can identify those directories because they have a directory marker file 
+# added by the makefile.
+if [ -x $directory_marker_path ]; then
+	exit 0
 fi
 
 dependency_extension=dep
 
-output_path=$1
-directory=$2
 dependency_directory=$(dirname $output_path)
 
-#subdirectories=$(find . -maxdepth 1 -mindepth 1 -type d -not -iname ".git")
 entries=$(ls -p $directory)
-
-echo "" > $output_path
 
 echo "directory=$directory" >> $output_path
 echo "dependency_directory=$dependency_directory" >> $output_path
