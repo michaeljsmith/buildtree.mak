@@ -17,7 +17,7 @@ echo "" > $output_path
 # To prevent infinite recursion, skip directories that we have created - we 
 # can identify those directories because they have a directory marker file 
 # added by the makefile.
-if [ -x $directory_marker_path ]; then
+if [ -f $directory_marker_path ]; then
 	exit 0
 fi
 
