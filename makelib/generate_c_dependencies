@@ -76,7 +76,7 @@ echo "    $source_path \\" >> $output_path
 OLDIFS=$IFS
 IFS=$(echo -en "\n\b")
 for include_path in $include_paths; do
-	echo "    $include_path.marker \\" >> $output_path
+	echo "    \$(module_dep_path)/$include_path.marker \\" >> $output_path
 done
 echo "" >> $output_path
 IFS=$OLDIFS
