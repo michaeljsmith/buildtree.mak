@@ -1,5 +1,5 @@
 define rules_template
-$(2)/%/.$(dependency_extension): $(1)/%/ $(2)/%/$(directory_marker_file)
+$(2)/%/.$(dependency_extension): $(1)/%/ $(2)/%/.$(marker_extension)
 	bash makelib/generate_directory_dependencies $$@ $(1)/$$*
 
 $(2)/%.cpp.$(dependency_extension): $(1)/%.cpp

@@ -7,10 +7,7 @@ fi
 output_path=$1
 directory=$2
 
-directory_marker_file_extension=dirmarker
-directory_marker_file=.directory.$directory_marker_file_extension
-
-directory_marker_path=$directory/$directory_marker_file
+directory_marker_path=$directory/.marker
 
 echo "" > $output_path
 
@@ -18,6 +15,7 @@ echo "" > $output_path
 # can identify those directories because they have a directory marker file 
 # added by the makefile.
 if [ -f $directory_marker_path ]; then
+	echo "EXITING!"
 	exit 0
 fi
 
@@ -32,6 +30,18 @@ echo "dependency_directory=$dependency_directory" >> $output_path
 
 echo "include makelib/dependency_generation.mak" >> $output_path
 
+echo "" >> $output_path
+echo "old_total_objects=\$(total_objects)" >> $output_path
+echo "total_objects=" >> $output_path
+
 for entry in $entries; do
+	echo "" >> $output_path
+	echo "objects=" >> $output_path
 	echo "-include $dependency_directory/$entry.$dependency_extension" >> $output_path
+	echo "total_objects:=\$(total_objects) \$(objects)" >> $output_path
 done
+
+echo "" >> $output_path
+echo "objects:=\$(total_objects)" >> $output_path
+echo "total_objects:=\$(old_total_objects)" >> $output_path
+

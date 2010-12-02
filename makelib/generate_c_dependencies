@@ -22,9 +22,12 @@ source_path=$2
 source_file=$(basename $source_path)
 source_directory=$(dirname $source_path)
 output_directory=$(dirname $output_path)
+object_path=$output_directory/$source_file.o
 marker_file=$output_directory/$source_file.$marker_extension
 
 # Output the rule for making the object file. Not relevant for header files.
-echo "$output_directory/$source_file.o: $marker_file" >> $output_path
+echo "$object_path: $marker_file" >> $output_path
 echo "" >> $output_path
 
+# Output the list of objects (there is only one here!).
+echo "objects=$object_path" >> $output_path
