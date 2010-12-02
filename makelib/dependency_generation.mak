@@ -1,7 +1,6 @@
-# TODO: Make this immediate rather than deferred.
-define recipe
-bash makelib/generate_directory_dependencies $@ $(directory)/$*
+define rules_template
+$(2)/%/.$(dependency_extension): $(1)/%/ $(2)/%/$(directory_marker_file)
+	bash makelib/generate_directory_dependencies $$@ $(1)/$$*
 endef
 
-$(dependency_directory)/%/.$(dependency_extension): $(directory)/%/ $(dependency_directory)/%/$(directory_marker_file)
-	$(recipe)
+$(eval $(call rules_template,$(directory),$(dependency_directory)))
