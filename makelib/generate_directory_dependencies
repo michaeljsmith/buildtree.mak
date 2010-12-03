@@ -30,8 +30,6 @@ echo "directory=$directory" >> $output_path
 echo "dependency_directory=$dependency_directory" >> $output_path
 echo "object_directory=$object_directory" >> $output_path
 
-echo "include makelib/dependency_generation.mak" >> $output_path
-
 echo "" >> $output_path
 echo "old_total_objects=\$(total_objects)" >> $output_path
 echo "total_objects=" >> $output_path

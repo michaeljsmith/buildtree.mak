@@ -40,3 +40,12 @@ $(module_obj_path)/%.cpp.o: $(module_source_dir)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c \
 		-o $(module_obj_path)/$*.cpp.o \
 		$(module_source_dir)/$*.cpp
+
+$(module_dep_path)/%/.$(dependency_extension): $(module_source_dir)/%/ $(module_dep_path)/%/.$(marker_extension)
+	bash makelib/generate_directory_dependencies $@ $(module_source_dir)/$* $(module_obj_path)/$*
+
+$(module_dep_path)/%.cpp.$(dependency_extension): $(module_source_dir)/%.cpp
+	bash $(CPPFLAGS) makelib/generate_c_dependencies $@ $(module_source_dir)/$*.cpp $(module_obj_path)/$(*D)
+
+$(module_dep_path)/%.h.$(dependency_extension): $(module_source_dir)/%.h
+	bash $(CPPFLAGS) makelib/generate_h_dependencies $@ $(module_source_dir)/$*.h $(module_obj_path)/$(*D)
