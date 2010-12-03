@@ -36,6 +36,9 @@ $(module_target): $(objects) |$(module_bin_path)/.$(marker_extension)
 
 .PRECIOUS: %/.$(marker_extension)
 
+%.$(marker_extension):
+	touch $@
+
 $(source_dependency_file): $(module_dep_path)/.$(marker_extension)
 	bash makelib/generate_directory_dependencies $@ $(module_source_dir) $(module_obj_path)
 

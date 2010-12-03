@@ -72,5 +72,4 @@ IFS=$OLDIFS
 
 echo "$marker_file: ${source_path#./} \$(include_markers)" >> $output_path
 
-echo -e "\ttouch $marker_file" >> $output_path
 echo "" >> $output_path
