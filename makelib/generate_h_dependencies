@@ -16,6 +16,7 @@ marker_extension="marker"
 # Remaining positional arguments are the paths.
 output_path=$1
 source_path=$2
+object_directory=$3
 source_file=$(basename $source_path)
 source_directory=$(dirname $source_path)
 output_directory=$(dirname $output_path)
@@ -62,7 +63,7 @@ echo "" >> $output_path
 echo "" >> $output_path
 IFS=$OLDIFS
 
-echo "$marker_file: $source_path \$(include_markers)" >> $output_path
+echo "$marker_file: ${source_path#./} \$(include_markers)" >> $output_path
 
 echo -e "\ttouch $marker_file" >> $output_path
 echo "" >> $output_path

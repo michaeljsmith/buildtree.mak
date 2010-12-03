@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-if [ $# -ne 2 ]; then
-	echo "Usage: $0 <outputfile> <directory>"
+if [ $# -ne 3 ]; then
+	echo "ARGS: $*"
+	echo "Usage: $0 <outputfile> <directory> <objdir>"
 	exit 1
 fi
 output_path=$1
 directory=$2
+object_directory=$3
 
 directory_marker_path=$directory/.marker
 
@@ -15,7 +17,6 @@ echo "" > $output_path
 # can identify those directories because they have a directory marker file 
 # added by the makefile.
 if [ -f $directory_marker_path ]; then
-	echo "EXITING!"
 	exit 0
 fi
 
@@ -27,6 +28,7 @@ entries=$(ls -p $directory)
 
 echo "directory=$directory" >> $output_path
 echo "dependency_directory=$dependency_directory" >> $output_path
+echo "object_directory=$object_directory" >> $output_path
 
 echo "include makelib/dependency_generation.mak" >> $output_path
 

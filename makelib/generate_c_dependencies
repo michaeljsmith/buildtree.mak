@@ -19,10 +19,11 @@ marker_extension="marker"
 # Remaining positional arguments are the paths.
 output_path=$1
 source_path=$2
+object_directory=$3
 source_file=$(basename $source_path)
 source_directory=$(dirname $source_path)
 output_directory=$(dirname $output_path)
-object_path=$output_directory/$source_file.o
+object_path=$object_directory/$source_file.o
 marker_file=$output_directory/$source_file.$marker_extension
 
 # Output the rule for making the object file. Not relevant for header files.

@@ -9,13 +9,18 @@ module_name=testmod
 module_source_dir=.
 module_dep_dir=dep
 module_dep_path=$(config_prefix)/$(module_dep_dir)
+module_obj_dir=obj
+module_obj_path=$(config_prefix)/$(module_obj_dir)
 
 module_target=$(module_name)
 
 source_dependency_file=$(module_dep_path)/src.$(dependency_extension)
 
-.PHONY: default
+.PHONY: default clean
 default: $(module_target)
+
+clean:
+	rm -rf $(config_prefix)
 
 include $(source_dependency_file)
 
@@ -26,11 +31,7 @@ $(module_target): $(objects)
 	mkdir -p $(@D)
 	touch $@
 
-#%.h.$(marker_extension):
-#	echo "Compiling header."
-#	touch $@
-
-.PRECIOUS: %.$(marker_extension)
+.PRECIOUS: %/.$(marker_extension)
 
 $(source_dependency_file): $(module_dep_path)/.$(marker_extension)
-	bash makelib/generate_directory_dependencies $@ $(module_source_dir)
+	bash makelib/generate_directory_dependencies $@ $(module_source_dir) $(module_obj_path)
