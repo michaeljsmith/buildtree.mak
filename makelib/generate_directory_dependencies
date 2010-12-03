@@ -9,7 +9,7 @@ output_path=$1
 directory=$2
 object_directory=$3
 
-directory_marker_path=$directory/.marker
+directory_marker_path=$directory/.dirmarker
 
 echo "" > $output_path
 

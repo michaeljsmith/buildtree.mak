@@ -15,6 +15,7 @@ done
 shift `expr $OPTIND - 1`
 
 marker_extension="marker"
+dirmarker_extension="dirmarker"
 
 # Remaining positional arguments are the paths.
 output_path=$1
@@ -25,7 +26,7 @@ source_directory=$(dirname $source_path)
 output_directory=$(dirname $output_path)
 object_path=$object_directory/$source_file.o
 marker_file=$output_directory/$source_file.$marker_extension
-object_dir_marker=$object_directory/.$marker_extension
+object_dir_marker=$object_directory/.$dirmarker_extension
 
 # Output the rule for making the object file. Not relevant for header files.
 echo "$object_path: $object_dir_marker $marker_file" >> $output_path
