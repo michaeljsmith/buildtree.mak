@@ -37,7 +37,7 @@ for include_file in $include_files; do
 	for include_dir in $include_dirs; do
 		path="$include_dir/$include_file"
 		if [ -f $path ]; then
-			include_path=$path
+			include_path=${path#./}
 		fi
 	done
 

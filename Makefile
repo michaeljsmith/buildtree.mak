@@ -1,4 +1,4 @@
-dependency_extension=dep
+dependency_extension=dep.mak
 
 marker_extension=marker
 
@@ -19,7 +19,7 @@ default: $(module_target)
 
 include $(source_dependency_file)
 
-$(module_target): $(source_dependency_file) $(objects)
+$(module_target): $(objects)
 	echo "DEPENDENCIES=$^"
 
 %/.$(marker_extension):
@@ -27,6 +27,7 @@ $(module_target): $(source_dependency_file) $(objects)
 	touch $@
 
 #%.h.$(marker_extension):
+#	echo "Compiling header."
 #	touch $@
 
 .PRECIOUS: %.$(marker_extension)

@@ -19,7 +19,7 @@ if [ -f $directory_marker_path ]; then
 	exit 0
 fi
 
-dependency_extension=dep
+dependency_extension=dep.mak
 
 dependency_directory=$(dirname $output_path)
 
