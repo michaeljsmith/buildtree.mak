@@ -17,7 +17,7 @@ module_bin_path=$(config_prefix)/$(module_bin_dir)
 
 module_target=$(module_bin_path)/$(module_name)
 
-source_dependency_file=$(module_dep_path)/src.$(dependency_extension)
+source_dependency_file=$(module_dep_path)/.$(dependency_extension)
 
 .PHONY: default clean
 default: $(module_target) $(config_prefix)/.$(marker_extension)
@@ -25,7 +25,7 @@ default: $(module_target) $(config_prefix)/.$(marker_extension)
 clean:
 	rm -rf $(config_prefix)
 
--include $(source_dependency_file)
+include $(source_dependency_file)
 
 $(module_target): $(objects) |$(module_bin_path)/.$(marker_extension)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
@@ -42,11 +42,11 @@ $(module_target): $(objects) |$(module_bin_path)/.$(marker_extension)
 $(module_obj_path)/%.cpp.o: $(module_source_dir)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $(module_obj_path)/$*.cpp.o $(module_source_dir)/$*.cpp
 
-$(source_dependency_file): $(module_dep_path)/.$(marker_extension)
+$(module_dep_path)/.$(dependency_extension): $(module_source_dir)/ $(module_dep_path)/.$(marker_extension)
 	@bash makelib/generate_directory_dependencies $@ $(module_source_dir) $(module_obj_path)
 
-$(module_dep_path)/%/.$(dependency_extension): $(module_source_dir)/%/ $(module_dep_path)/%/.$(marker_extension)
-	@bash makelib/generate_directory_dependencies $@ $(module_source_dir)/$* $(module_obj_path)/$*
+$(module_dep_path)%/.$(dependency_extension): $(module_source_dir)%/ $(module_dep_path)%/.$(marker_extension)
+	@bash makelib/generate_directory_dependencies $@ $(module_source_dir)$* $(module_obj_path)$*
 
 $(module_dep_path)/%.cpp.$(dependency_extension): $(module_source_dir)/%.cpp
 	@bash $(CPPFLAGS) makelib/generate_c_dependencies $@ $(module_source_dir)/$*.cpp $(module_obj_path)/$(*D)
