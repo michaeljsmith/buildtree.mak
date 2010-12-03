@@ -35,3 +35,8 @@ $(module_target): $(objects)
 
 $(source_dependency_file): $(module_dep_path)/.$(marker_extension)
 	bash makelib/generate_directory_dependencies $@ $(module_source_dir) $(module_obj_path)
+
+$(module_obj_path)/%.cpp.o: $(module_source_dir)/%.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c \
+		-o $(module_obj_path)/$*.cpp.o \
+		$(module_source_dir)/$*.cpp

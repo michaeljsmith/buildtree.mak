@@ -2,10 +2,11 @@
 #define __UI_H__
 
 #include <stdio.h>
-#include "missing2.h" // Missing file!
+//#include "missing2.h" // Missing file!
 
 class UI
 {
+public:
 	void run();
 };
 
