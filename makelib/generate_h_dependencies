@@ -45,7 +45,13 @@ for include_file in $include_files; do
 	if [ -z $include_path ]; then
 		echo "Cannot find include file \"$include_file\", referenced in \"$source_path\"." >&2
 	else
-		include_paths=$(echo -e "$include_paths\n$include_path")
+		# Compute a normalized, relative path. Doesn't work if header is
+		# outside current directory.
+		abspath=$(readlink -f $include_path)
+		curpath=$(readlink -f $(pwd))
+		relpath=$(echo $abspath | sed -e "s*^$curpath/**")
+
+		include_paths=$(echo -e "$include_paths\n$relpath")
 	fi
 done
 IFS=$OLDIFS
