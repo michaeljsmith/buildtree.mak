@@ -20,7 +20,7 @@ module_target=$(module_bin_path)/$(module_name)
 source_dependency_file=$(module_dep_path)/src.$(dependency_extension)
 
 .PHONY: default clean
-default: $(module_target)
+default: $(module_target) $(config_prefix)/.$(marker_extension)
 
 clean:
 	rm -rf $(config_prefix)
