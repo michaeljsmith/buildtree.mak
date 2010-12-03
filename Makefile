@@ -11,8 +11,10 @@ module_dep_dir=dep
 module_dep_path=$(config_prefix)/$(module_dep_dir)
 module_obj_dir=obj
 module_obj_path=$(config_prefix)/$(module_obj_dir)
+module_bin_dir=bin
+module_bin_path=$(config_prefix)/$(module_bin_dir)
 
-module_target=$(module_name)
+module_target=$(module_bin_path)/$(module_name)
 
 source_dependency_file=$(module_dep_path)/src.$(dependency_extension)
 
@@ -24,8 +26,8 @@ clean:
 
 include $(source_dependency_file)
 
-$(module_target): $(objects)
-	echo "DEPENDENCIES=$^"
+$(module_target): $(objects) |$(module_bin_path)/.$(marker_extension)
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
 
 %/.$(marker_extension):
 	mkdir -p $(@D)
