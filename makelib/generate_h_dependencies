@@ -57,6 +57,7 @@ done
 IFS=$OLDIFS
 
 # Output the dependency makefile fragment.
+echo "" > $output_path
 
 # Output the dependencies of the marker file.
 echo -n "include_markers=" >> $output_path
