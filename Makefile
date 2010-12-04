@@ -66,10 +66,6 @@ if [ -f $$directory_marker_path ]; then \
 fi; \
 dependency_directory=$$(dirname $$output_path); \
 entries=$$(ls -p $$directory); \
-echo "directory=$$directory" >> $$output_path; \
-echo "dependency_directory=$$dependency_directory" >> $$output_path; \
-echo "object_directory=$$object_directory" >> $$output_path; \
-echo "" >> $$output_path; \
 echo "old_total_objects=\$$(total_objects)" >> $$output_path; \
 echo "total_objects=" >> $$output_path; \
 for entry in $$entries; do \
