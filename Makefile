@@ -45,6 +45,9 @@ $(module_target): $(objects) |$(module_bin_path)/.$(dirmarker_extension)
 $(module_obj_path)/%.cpp.o: $(module_source_dir)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $(module_obj_path)/$*.cpp.o $(module_source_dir)/$*.cpp
 
+$(module_dep_path)/%$(dependency_extension): $(module_source_dir)/% $(module_dep_path)/%$(dirmarker_extension)
+	$(output_directory_fragment)
+
 $(module_dep_path)/%.cpp.$(dependency_extension): $(module_source_dir)/%.cpp
 	@source_path="$(module_source_dir)/$*.cpp"; \
 	$(output_include_dependencies)
@@ -54,8 +57,33 @@ $(module_dep_path)/%.h.$(dependency_extension): $(module_source_dir)/%.h
 	@source_path="$(module_source_dir)/$*.h"; \
 	$(output_include_dependencies)
 
-$(module_dep_path)/%$(dependency_extension): $(module_source_dir)/% $(module_dep_path)/%$(dirmarker_extension)
-	@bash makelib/generate_directory_dependencies $@ $(module_source_dir)/$* $(module_obj_path)/$*
+define output_directory_fragment
+@output_path=$@; \
+directory=$(module_source_dir)/$*; \
+object_directory=$(module_obj_path)/$*; \
+directory_marker_path=$$directory/.$(dirmarker_extension); \
+echo "" > $$output_path; \
+if [ -f $$directory_marker_path ]; then \
+	exit 0; \
+fi; \
+dependency_directory=$$(dirname $$output_path); \
+entries=$$(ls -p $$directory); \
+echo "directory=$$directory" >> $$output_path; \
+echo "dependency_directory=$$dependency_directory" >> $$output_path; \
+echo "object_directory=$$object_directory" >> $$output_path; \
+echo "" >> $$output_path; \
+echo "old_total_objects=\$$(total_objects)" >> $$output_path; \
+echo "total_objects=" >> $$output_path; \
+for entry in $$entries; do \
+	echo "" >> $$output_path; \
+	echo "objects=" >> $$output_path; \
+	echo "-include $$dependency_directory/$$entry.$(dependency_extension)" >> $$output_path; \
+	echo "total_objects:=\$$(total_objects) \$$(objects)" >> $$output_path; \
+done; \
+echo "" >> $$output_path; \
+echo "objects:=\$$(total_objects)" >> $$output_path; \
+echo "total_objects:=\$$(old_total_objects)" >> $$output_path
+endef
 
 define output_include_dependencies
 output_path="$@"; \
