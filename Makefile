@@ -49,12 +49,10 @@ $(module_dep_path)/%$(dependency_extension): $(module_source_dir)/% $(module_dep
 	$(output_directory_fragment)
 
 $(module_dep_path)/%.cpp.$(dependency_extension): $(module_source_dir)/%.cpp
-	@source_path="$(module_source_dir)/$*.cpp"; \
 	$(output_include_dependencies)
 	$(append_object_prerequisites)
 
 $(module_dep_path)/%.h.$(dependency_extension): $(module_source_dir)/%.h
-	@source_path="$(module_source_dir)/$*.h"; \
 	$(output_include_dependencies)
 
 define output_directory_fragment
@@ -86,6 +84,7 @@ echo "total_objects:=\$$(old_total_objects)" >> $$output_path
 endef
 
 define output_include_dependencies
+@source_path="$<"; \
 output_path="$@"; \
 object_directory="$(module_obj_path)/$(*D)"; \
 source_file=$$(basename $$source_path); \
