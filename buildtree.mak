@@ -69,6 +69,7 @@ clean:
 # makefile fragments describing the dependencies of all files in the tree.
 # This relies on the feature of GNU make where include statements first look
 # for rules to update included makefile and update them before including them.
+objects:=
 -include $(source_dependency_file)
 
 # Rule for linking module. Change this if target is SO/DLL, for instance.
@@ -138,17 +139,10 @@ if [ -f $$directory_marker_path ]; then \
 fi; \
 dependency_directory=$$(dirname $$output_path); \
 entries=$$(ls -p $$directory); \
-echo "old_total_objects=\$$(total_objects)" >> $$output_path; \
-echo "total_objects=" >> $$output_path; \
 for entry in $$entries; do \
-	echo "" >> $$output_path; \
-	echo "objects=" >> $$output_path; \
 	echo "-include $$dependency_directory/$$entry.$(dependency_extension)" >> $$output_path; \
-	echo "total_objects:=\$$(total_objects) \$$(objects)" >> $$output_path; \
 done; \
-echo "" >> $$output_path; \
-echo "objects:=\$$(total_objects)" >> $$output_path; \
-echo "total_objects:=\$$(old_total_objects)" >> $$output_path
+echo "" >> $$output_path;
 endef
 
 # Generate dependency makefile fragment for an include file.
@@ -212,6 +206,6 @@ marker_file=$$output_directory/$$source_file.$(marker_extension); \
 object_dir_marker=$$object_directory/.$(dirmarker_extension); \
 echo "$$object_path: $$object_dir_marker $$marker_file" >> $$output_path; \
 echo "" >> $$output_path; \
-echo "objects=$$object_path" >> $$output_path
+echo "objects+=$$object_path" >> $$output_path
 endef
 
