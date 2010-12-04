@@ -65,6 +65,12 @@ default: $(module_target) $(config_prefix)/.$(dirmarker_extension)
 clean:
 	rm -rf $(config_prefix)
 
+# Include the root dependency file - this will recursively build and include
+# makefile fragments describing the dependencies of all files in the tree.
+# This relies on the feature of GNU make where include statements first look
+# for rules to update included makefile and update them before including them.
+-include $(source_dependency_file)
+
 # Rule for linking module. Change this if target is SO/DLL, for instance.
 $(module_target): $(objects) |$(module_bin_path)/.$(dirmarker_extension)
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LOADLIBES) $(LDLIBS)
@@ -82,12 +88,6 @@ $(module_obj_path)/%.c.o: $(module_source_dir)/%.c
 ##############################################################################
 # Remainder of makefile is for dependency generation and object tree creation.
 ##############################################################################
-
-# Include the root dependency file - this will recursively build and include
-# makefile fragments describing the dependencies of all files in the tree.
-# This relies on the feature of GNU make where include statements first look
-# for rules to update included makefile and update them before including them.
--include $(source_dependency_file)
 
 # Rule for creating directories - marker files are included as dependencies
 # whenever a target requires a directory to exist.
