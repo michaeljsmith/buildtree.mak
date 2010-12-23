@@ -138,7 +138,7 @@ if [ -f $$directory_marker_path ]; then \
 	exit 0; \
 fi; \
 dependency_directory=$$(dirname $$output_path); \
-entries=$$(ls -p $$directory); \
+entries=$$(ls -p $$directory | grep "^[A-Za-z]"); \
 for entry in $$entries; do \
 	echo "-include $$dependency_directory/$$entry.$(dependency_extension)" >> $$output_path; \
 done; \
