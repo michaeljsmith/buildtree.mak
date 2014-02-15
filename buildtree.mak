@@ -35,6 +35,8 @@
 # TODO: Handle includes outside of tree.
 ##############################################################################
 
+SHELL=bash
+
 # Basic configuration variables.
 config=debug
 module_name=testmod
@@ -155,7 +157,7 @@ source_directory=$$(dirname $$source_path); \
 output_directory=$$(dirname $$output_path); \
 marker_file=$$output_directory/$$source_file.$(marker_extension); \
 include_dirs="$$(echo -e "$$source_directory\n$$include_dirs")"; \
-include_files=$$(sed -n -e 's/^\s*#include\s\+"\(.*\)".*$$/\1/p' $$source_path); \
+include_files=$$(sed -n -e 's/^[[:space:]]*#include[[:space:]][[:space:]]*"\(.*\)".*$$/\1/p' $$source_path); \
 OLDIFS=$$IFS; \
 IFS=$$(echo -en "\n\b"); \
 include_paths=""; \
@@ -170,8 +172,8 @@ for include_file in $$include_files; do \
 	if [ -z $$include_path ]; then \
 		echo "Cannot find include file \"$$include_file\", referenced in \"$$source_path\"." >&2; \
 	else \
-		abspath=$$(readlink -f $$include_path); \
-		curpath=$$(readlink -f $$(pwd)); \
+		abspath=$$(cd $$(dirname $$include_path); echo $$(pwd)/$$(basename $$include_path)); \
+		curpath=$$(pwd); \
 		relpath=$$(echo $$abspath | sed -e "s*^$$curpath/**"); \
 		include_paths=$$(echo -e "$$include_paths\n$$relpath"); \
 	fi; \
